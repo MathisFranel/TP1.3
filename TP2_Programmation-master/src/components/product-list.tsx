@@ -1,12 +1,12 @@
 "use client";
 import { FC, memo, useMemo, useState } from "react";
 import { ProductFilters } from "./product-filters";
-import { ProductsCategoryData } from "tp-kit/types";
 import { Button, ProductCardLayout, ProductGridLayout } from "tp-kit/components";
 import { ProductFiltersResult } from "../types";
 import { filterProducts } from "../utils/filter-products";
 import Link from "next/link";
 import {addLine} from "../hooks/use-cart";
+import {ProductsCategoryData,ProductData} from "tp-kit/types";
 
 type Props = {
   categories: ProductsCategoryData[];
@@ -14,14 +14,21 @@ type Props = {
 };
 
 const ProductList: FC<Props> = memo(function ({ categories, showFilters = false }) {
-  const [filters, setFilters] = useState<ProductFiltersResult | undefined>();
-  const filteredCategories = useMemo(() => filterProducts(categories, filters), [filters, categories]);
+  const cate = categories[0]
+    const [filters, setFilters] = useState<ProductFiltersResult | undefined>();
+  const filteredCategories = useMemo(() => filterProducts(cate, filters), [filters, cate]);
+    if(!cate){
+        return null;
+    }
+
+    
+
 
   return (
     <div className="flex flex-row gap-8">
       {/* Filters */}
       {showFilters && <div className="w-full max-w-[270px]">
-        <ProductFilters categories={categories} onChange={setFilters} />
+        <ProductFilters categories={cate} onChange={setFilters} />
       </div>}
 
       {/* Grille Produit */}

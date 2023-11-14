@@ -9,19 +9,12 @@ import {
   SectionContainer,
 } from "tp-kit/components";
 import { NextPageProps } from "../../../types";
-import { PRODUCTS_CATEGORY_DATA } from "tp-kit/data";
 import { Metadata } from "next";
 import {
   ProductAttribute,
   ProductAttributesTable,
 } from "../../../components/product-attributes-table";
-const product = {
-  ...PRODUCTS_CATEGORY_DATA[0].products[0],
-  category: {
-    ...PRODUCTS_CATEGORY_DATA[0],
-    products: PRODUCTS_CATEGORY_DATA[0].products.slice(1),
-  },
-};
+import {getProduct} from "../../../utils/getCategory";
 
 type Props = {
   categorySlug: string;
@@ -32,11 +25,13 @@ export async function generateMetadata({
   params,
   searchParams,
 }: NextPageProps<Props>): Promise<Metadata> {
+  const product   = await getProduct(params.productSlug,params.categorySlug);
+
   return {
-    title: product.name,
+    title: product?.name,
     description:
-      product.desc ??
-      `Succombez pour notre ${product.name} et commandez-le sur notre site !`,
+      product?.desc ??
+      `Succombez pour notre ${product?.name} et commandez-le sur notre site !`,
   };
 }
 
@@ -49,6 +44,10 @@ const productAttributes: ProductAttribute[] = [
 ];
 
 export default async function ProductPage({ params }: NextPageProps<Props>) {
+  const product   = await getProduct(params.productSlug, params.categorySlug);
+  if(!product){
+    return null
+  }
   return (
     <SectionContainer wrapperClassName="max-w-5xl">
       <BreadCrumbs

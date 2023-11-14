@@ -3,22 +3,28 @@ import { PRODUCTS_CATEGORY_DATA } from "tp-kit/data";
 import { ProductList } from "../../components/product-list";
 import { NextPageProps } from "../../types";
 import { Metadata } from "next";
+import {getCategory} from "../../utils/getCategory";
 import prisma from "../../utils/prisma";
 
-const category = await prisma.productCategory.findMany({include:{products:true}});
+
 
 type Props = {
   categorySlug: string;
 };
 
 export async function generateMetadata({ params, searchParams} : NextPageProps<Props>) : Promise<Metadata> {
+    const category   = await getCategory(params.categorySlug);
   return {
-    title: category[0].name,
-    description: `Trouvez votre inspiration avec un vaste choix de boissons Starbucks parmi nos produits ${category[0].name}`
+    title: category?.name,
+    description: `Trouvez votre inspiration avec un vaste choix de boissons Starbucks parmi nos produits ${category?.name}`
   }
 }
 
-export default function CategoryPage({params}: NextPageProps<Props>) {
+export default async function CategoryPage({params}: NextPageProps<Props>) {
+    const category   = await getCategory(params.categorySlug);
+    if(!category){
+        return null;
+    }
   return <SectionContainer>
     <BreadCrumbs 
       items={[
@@ -27,12 +33,12 @@ export default function CategoryPage({params}: NextPageProps<Props>) {
           url: "/"
         },
         {
-          label: category[0].name,
-          url: `/${category[0].slug}`
+          label: category.name,
+          url: `/${category.slug}`
         }
       ]}
     />
 
-    <ProductList categories={[category[0]]} />
+    <ProductList categories={[category]} />
   </SectionContainer>
 }

@@ -9,11 +9,12 @@ import { MagnifyingGlass } from "@phosphor-icons/react";
 import { Button } from "tp-kit/components";
 
 type Props = {
-  categories: ProductsCategoryData[];
+  categories: any;
   onChange: (values: ProductFiltersResult) => void;
 };
 
 const ProductFilters: FC<Props> = memo(function ({ categories, onChange }) {
+    console.log(categories)
   /**
    * Initializes the form with empty fields. Never let a field undefined to let react properly controls the inputs
    */
